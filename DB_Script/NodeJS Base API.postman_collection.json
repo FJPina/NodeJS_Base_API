@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "43815e36-958b-41f1-8a89-0dcc0410f842",
+		"name": "NodeJS Base API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4059237"
+	},
+	"item": [
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/usuario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/usuario/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"usuario",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insertar Detalle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UsuarioMov\": 1,\r\n    \"Usuario\": {\r\n        \"Nombre\": \"Margarita\",\r\n        \"ApPaterno\": \"lopez\",\r\n        \"ApMaterno\": \"perez\"\r\n    },\r\n    \"Login\": {\r\n        \"Usuario\":\"fco.pl18@gmail.com\",\r\n        \"Contrasena\":\"Contrasena\",\r\n        \"IdRol\": 2\r\n    },\r\n    \"Direccion\": {\r\n        \"Calle\": \"Lopez Mateos\",\r\n        \"NumeroExt\": 321,\r\n        \"NumeroInt\": \"0\",\r\n        \"Colonia\": \"Centro\",\r\n        \"Municipio\": \"Morelia\",\r\n        \"Estado\": \"Michoacan\",\r\n        \"CP\": \"58000\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/Usuario/detalle",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"Usuario",
+								"detalle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insertar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UsuarioMov\": 1,\r\n    \"Usuario\": {\r\n        \"Nombre\": \"Margarita\",\r\n        \"ApPaterno\": \"lopez\",\r\n        \"ApMaterno\": \"perez\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/Usuario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"Usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Detalle",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UsuarioMov\": 1,\r\n    \"Usuario\": {\r\n            \"IdUsuario\": 2,\r\n            \"Nombre\": \"Fernando\",\r\n            \"ApPaterno\": \"Ruiz\",\r\n            \"ApMaterno\": \"Curado\"\r\n        },\r\n        \"Login\": {\r\n            \"IdLogin\": 2,\r\n            \"IdUsuario\": 2,\r\n            \"Usuario\": \"ferruiz@gmail.com\",\r\n            \"Contrasena\": \"Contraseña\",\r\n            \"IdRol\": 2\r\n        },\r\n        \"Direccion\": {\r\n            \"IdDireccion\": 2,\r\n            \"IdUsuario\": 2,\r\n            \"Calle\": \"Saavedra\",\r\n            \"NumeroExt\": 1005,\r\n            \"NumeroInt\": \"a\",\r\n            \"Colonia\": \"Cementos\",\r\n            \"Municipio\": \"Leon\",\r\n            \"Estado\": \"Guanajuato\",\r\n            \"CP\": \"57000\"\r\n        }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/usuario/detalle",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"usuario",
+								"detalle"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Detalle",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"UsuarioMov\": 1,\r\n\"IdUsuario\": 7\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/usuario/detalle",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"usuario",
+								"detalle"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Usuario\" : \"alopez@correo.com\",\r\n    \"Contrasena\" : \"contrasena\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logins por Usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/login/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"login",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
