@@ -5,11 +5,11 @@ const router = express.Router();
 const seguridad = require('../middlewares/security');
 
 //Rutas
-router.get('/', Listar);
-router.get('/buscar/:id', Buscar);
-router.delete('/', Eliminar);
-router.put('/', Modificar);
-router.post('/', Crear);
+router.get('/', seguridad(), Listar);
+router.get('/buscar/:id', seguridad(), Buscar);
+router.delete('/', seguridad(), Eliminar);
+router.put('/', seguridad(), Modificar);
+router.post('/', seguridad(), Crear);
 
 async function Listar(req, res, next){
     try{

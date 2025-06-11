@@ -5,12 +5,12 @@ const router = express.Router();
 const seguridad = require('../middlewares/security');
 
 //Rutas
-router.get('/:id', LoginXUsuario);
-router.get('/buscar/:id', Buscar);
-router.delete('/', Eliminar);
+router.get('/:id',seguridad(), LoginXUsuario);
+router.get('/buscar/:id',seguridad(), Buscar);
+router.delete('/',seguridad(), Eliminar);
 router.post('/', Login);
-router.put('/', Modificar);
-router.post('/', Crear);
+router.put('/',seguridad(), Modificar);
+router.post('/crear/',seguridad(), Crear);
 
 async function Login(req, res, next){
     try{

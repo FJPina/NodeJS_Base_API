@@ -8,7 +8,7 @@ const secret = encoder.encode(config.jwt.secret);
 async function AsignarToken(data){
 
     var JWTObj = new SignJWT(data);
-    const Token = await JWTObj.setProtectedHeader({alg: "HS256", typ: "JWT"}).setIssuedAt().setExpirationTime('10m').sign(secret);
+    const Token = await JWTObj.setProtectedHeader({alg: "HS256", typ: "JWT"}).setIssuedAt().setExpirationTime('3h').sign(secret);
     return Token;
 }
 
