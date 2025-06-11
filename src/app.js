@@ -3,9 +3,11 @@ const express = require('express');
 const morgan = require('morgan');
 const error = require('./utils/errors');
 
-const Direccion = require('./routes/DireccionRoutes');
+const direccion = require('./routes/DireccionRoutes');
 const usuario = require('./routes/UsuarioRoutes');
 const login = require('./routes/LoginRoutes');
+const modulo = require('./routes/ModuloRoutes');
+const rol = require('./routes/RolRoutes');
 
 const app = express();
 
@@ -20,9 +22,11 @@ app.set('port', config.app.port);
 // console.log(config.app.port, config.app.stringConnecion)
 
 //Rutas
-app.use('/api/direccion', Direccion);
+app.use('/api/direccion', direccion);
 app.use('/api/usuario', usuario);
 app.use('/api/login', login);
+app.use('/api/modulo', modulo);
+app.use('/api/rol', rol);
 app.use(error);
 
 module.exports = app;

@@ -108,356 +108,7 @@ CREATE TABLE ModuloXRol(
 
 GO
 
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE INSERCION ###################################
---CREACION SP INSERTAR USUARIO
-CREATE PROCEDURE Usp_Usuario_Ins
-	@Nombre VARCHAR(100),
-	@ApPaterno VARCHAR(100),
-	@ApMaterno VARCHAR(100),
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-
-	BEGIN TRY
-
-		INSERT INTO Usuario(Nombre, ApPaterno, ApMaterno, Insertado, UsuarioMov)
-		VALUES(@Nombre, @ApPaterno, @ApMaterno, GETDATE(), @UsuarioMov)
-
-		SELECT SCOPE_IDENTITY() as IdUsuario
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP INSERTAR LOGIN
-CREATE PROCEDURE Usp_Login_Ins
-	@IdUsuario INT,
-	@Usuario VARCHAR(100),
-	@Contrasena VARCHAR(100),
-	@IdRol INT,
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-
-	BEGIN TRY
-
-		INSERT INTO Login (IdUsuario, Usuario, Contrasena, IdRol, Insertado, UsuarioMov) VALUES (@IdUsuario, @Usuario, @Contrasena, @IdRol, GETDATE(), @UsuarioMov)
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP INSERTAR DIRECCION
-CREATE PROCEDURE Usp_Direccion_Ins
-	@IdUsuario INT,
-	@Calle VARCHAR(100),
-	@NumeroExt INT,
-	@NumeroInt INT,
-	@Colonia VARCHAR(100),
-	@Municipio VARCHAR(100),
-	@Estado VARCHAR(100),
-	@CP VARCHAR(10),
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-
-	BEGIN TRY
-
-		INSERT INTO Direccion (IdUsuario, Calle, NumeroExt, NumeroInt, Colonia, Municipio, Estado, CP, Insertado, UsuarioMov)
-		VALUES(@IdUsuario, @Calle, @NumeroExt, @NumeroInt, @Colonia, @Municipio, @Estado, @CP, GETDATE(), @UsuarioMov)
-
-		SELECT SCOPE_IDENTITY() as IdDireccion
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---################################### INSERTS DE EJEMPLOS ###################################
-
-exec Node_Base_API.dbo.Usp_Usuario_Ins 'Arturo', 'Lopez', 'Perez',1
-exec Node_Base_API.dbo.Usp_Usuario_Ins 'Margarita', 'lopez', 'perez',1
-
-INSERT INTO Rol (Descripcion, UsuarioMov) VALUES('Administrador', 1)
-INSERT INTO Rol (Descripcion, UsuarioMov) VALUES('Cliente', 1)
-
-INSERT INTO Modulo (Descripcion, UsuarioMov) VALUES ('Administracion clientes', 1)
-INSERT INTO Modulo (Descripcion, UsuarioMov) VALUES ('Administracion productos', 1)
-INSERT INTO Modulo (Descripcion, UsuarioMov) VALUES ('Vista productos', 1)
-
-INSERT INTO ModuloXRol (IdModulo, IdRol, UsuarioMov) VALUES(1, 1, 1)
-INSERT INTO ModuloXRol (IdModulo, IdRol, UsuarioMov) VALUES(2, 1, 1)
-INSERT INTO ModuloXRol (IdModulo, IdRol, UsuarioMov) VALUES(3, 2, 1)
-
-exec Node_Base_API.dbo.Usp_Direccion_Ins 1, 'Lopez Mateos', 319, '', 'Centro', 'Morelia', 'Michoacan', '58000',1
-exec Node_Base_API.dbo.Usp_Direccion_Ins 2, 'Lopez Mateos', 321, '', 'Centro', 'Morelia', 'Michoacan', '58000',1
-
-exec Node_Base_API.dbo.Usp_Login_Ins 1, 'alopez@correo.com', '$2b$05$R12Kmx48pgdyYQDHq9ho7uGdOELjw2OLMkWvu9HlsnFD7qE8Q6K66', 1, 1
-exec Node_Base_API.dbo.Usp_Login_Ins 2, 'mperez@correo.com', '$2b$05$R12Kmx48pgdyYQDHq9ho7uGdOELjw2OLMkWvu9HlsnFD7qE8Q6K66', 2, 1
-
-GO
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE ACTUALIZACION ###################################
-
---CREACION SP ACTUALIZAR USUARIO
-CREATE PROCEDURE Usp_Usuario_Act
-	@IdUsuario INT,
-	@Nombre VARCHAR(100),
-	@ApPaterno VARCHAR(100),
-	@ApMaterno VARCHAR(100),
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-
-	BEGIN TRY
-
-		UPDATE Usuario 
-		SET Nombre = @Nombre, ApPaterno = @ApPaterno, ApMaterno = @ApMaterno, Editado = GETDATE(), UsuarioMov = @UsuarioMov 
-		WHERE IdUsuario = @IdUsuario
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP ACTUALIZAR LOGIN
-CREATE PROCEDURE Usp_Login_Act
-	@IdLogin INT,
-	@Usuario VARCHAR(100),
-	@Contrasena VARCHAR(100),
-	@IdRol INT,
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-
-	BEGIN TRY
-
-		UPDATE Login 
-		SET Usuario = @Usuario, Contrasena = @Contrasena, Editado = GETDATE(), IdRol = @IdRol,  UsuarioMov = @UsuarioMov
-		WHERE IdLogin = @IdLogin
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP ACTUALIZAR DIRECCION
-CREATE PROCEDURE Usp_Direccion_Act
-	@IdDireccion INT,
-	@IdUsuario INT,
-	@Calle VARCHAR(100),
-	@NumeroExt INT,
-	@NumeroInt VARCHAR(10),
-	@Colonia VARCHAR(100),
-	@Municipio VARCHAR(100),
-	@Estado VARCHAR(100),
-	@CP VARCHAR(10),
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-
-	BEGIN TRY
-
-		UPDATE Direccion 
-		SET Calle = @Calle, NumeroExt = @NumeroExt, NumeroInt = @NumeroInt, Colonia = @Colonia, Municipio = @Municipio, 
-			Estado = @Estado, CP = @CP, Editado = GETDATE(), UsuarioMov = @UsuarioMov, IdUsuario = @IdUsuario
-		WHERE IdDireccion = @IdDireccion
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---exec Node_Base_API.dbo.Usp_Login_Act 4, 'correo3@correo.com', '$2b$05$R12Kmx48pgdyYQDHq9ho7uGdOELjw2OLMkWvu9HlsnFD7qE8Q6K66'
---exec Node_Base_API.dbo.Usp_Direccion_Act 2, 'Benito Juarez', 321, '', 'Centro', 'Morelia', 'Michoacan', '58000'
---exec Node_Base_API.dbo.Usp_Usuario_Act 2, 'Margarilla', 'lopez', 'perez', 3
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE ELIMINACION ###################################
-
---CREACION SP ELIMINAR USUARIO
-CREATE PROCEDURE Usp_Usuario_Eli
-	@IdUsuario INT,
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusEliminado int
-
-	SET 
-	 @EstatusEliminado = 1
-
-	BEGIN TRY
-
-		UPDATE Usuario SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdUsuario = @IdUsuario
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP ELIMINAR LOGIN
-CREATE PROCEDURE Usp_Login_Eli
-	@IdLogin INT,
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusEliminado int
-
-	SET 
-	 @EstatusEliminado = 1
-
-	BEGIN TRY
-
-		UPDATE Login SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdLogin = @IdLogin
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP ELIMINAR DIRECCION
-CREATE PROCEDURE Usp_Direccion_Eli
-	@IdDireccion INT,
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusEliminado int
-
-	SET 
-	 @EstatusEliminado = 1
-
-	BEGIN TRY
-
-		UPDATE Direccion SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdDireccion = @IdDireccion
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---exec Node_Base_API.dbo.Usp_Login_Eli 2
---exec Node_Base_API.dbo.Usp_Direccion_Eli 2
---exec Node_Base_API.dbo.Usp_Usuario_Eli 2
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE LISTADO ###################################
+--################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE USUARIO ###################################
 
 --CREACION SP OBTENER USUARIOS
 CREATE PROCEDURE Usp_Usuario_Obt
@@ -489,8 +140,6 @@ BEGIN
 
 END
 GO
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE BUSQUEDA ###################################
 
 --CREACION SP BUSCAR USUARIOS
 CREATE PROCEDURE Usp_Usuario_Bus
@@ -526,9 +175,186 @@ BEGIN
 END
 GO
 
+--CREACION SP BUSCAR USUARIOS CON INFORMACION DE DIRECCION Y LOGIN
+CREATE PROCEDURE Usp_UsuarioCompleto_Bus
+@IdUsuario INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		SELECT 
+			U.IdUsuario, U.Nombre, U.ApPaterno, U.ApMaterno, 
+			D.IdDireccion, D.Calle, D.NumeroExt, D.NumeroInt, D.Colonia, D.Municipio, D.Estado, D.CP, 
+			L.Usuario, L.IdRol
+		FROM Node_Base_API.dbo.Usuario  U
+		INNER JOIN Node_Base_API.dbo.Direccion D on D.IdUsuario = U.IdUsuario and D.Eliminado = 0
+		INNER JOIN Node_Base_API.dbo.Login L on L.IdUsuario = U.IdUsuario and L.Eliminado = 0
+		WHERE U.Eliminado = @EstatusExistente AND U.IdUsuario = @IdUsuario
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP EXISTE USUARIO
+CREATE PROCEDURE Usp_Usuario_Exi
+@IdUsuario INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		IF EXISTS( SELECT 1 FROM Usuario WHERE Eliminado = @EstatusExistente AND IdUsuario = @IdUsuario) 
+			return 1
+		else
+			return 0
+		
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ELIMINAR USUARIO
+CREATE PROCEDURE Usp_Usuario_Eli
+	@IdUsuario INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusEliminado int
+
+	SET 
+	 @EstatusEliminado = 1
+
+	BEGIN TRY
+
+		UPDATE Usuario SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdUsuario = @IdUsuario
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ACTUALIZAR USUARIO
+CREATE PROCEDURE Usp_Usuario_Act
+	@IdUsuario INT,
+	@Nombre VARCHAR(100),
+	@ApPaterno VARCHAR(100),
+	@ApMaterno VARCHAR(100),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		UPDATE Usuario 
+		SET Nombre = @Nombre, ApPaterno = @ApPaterno, ApMaterno = @ApMaterno, Editado = GETDATE(), UsuarioMov = @UsuarioMov 
+		WHERE IdUsuario = @IdUsuario
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP INSERTAR USUARIO
+CREATE PROCEDURE Usp_Usuario_Ins
+	@Nombre VARCHAR(100),
+	@ApPaterno VARCHAR(100),
+	@ApMaterno VARCHAR(100),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		INSERT INTO Usuario(Nombre, ApPaterno, ApMaterno, Insertado, UsuarioMov)
+		VALUES(@Nombre, @ApPaterno, @ApMaterno, GETDATE(), @UsuarioMov)
+
+		SELECT SCOPE_IDENTITY() as IdUsuario
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE LOGIN ###################################
+
 --CREACION SP BUSCAR LOGIN
 CREATE PROCEDURE Usp_Login_Bus
-	@IdLogin VARCHAR(100)
+	@IdLogin INT
 AS
 BEGIN
 	
@@ -594,81 +420,6 @@ BEGIN
 END
 GO
 
---CREACION SP OBTENER DIRECCIONES
-CREATE PROCEDURE Usp_Direccion_Bus
-@IdDireccion INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusExistente int
-
-	SET 
-	 @EstatusExistente = 0
-
-	BEGIN TRY
-		
-		SELECT IdDireccion, IdUsuario, Calle, NumeroExt, NumeroInt, Colonia, Municipio, Estado, CP 
-		FROM Direccion 
-		WHERE Eliminado = @EstatusExistente AND IdDireccion = @IdDireccion
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
-
---CREACION SP BUSCAR USUARIOS CON INFORMACION DE DIRECCION Y LOGIN
-CREATE PROCEDURE Usp_UsuarioCompleto_Bus
-@IdUsuario INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusExistente int
-
-	SET 
-	 @EstatusExistente = 0
-
-	BEGIN TRY
-
-		SELECT 
-			U.IdUsuario, U.Nombre, U.ApPaterno, U.ApMaterno, 
-			D.IdDireccion, D.Calle, D.NumeroExt, D.NumeroInt, D.Colonia, D.Municipio, D.Estado, D.CP, 
-			L.Usuario, L.IdRol
-		FROM Node_Base_API.dbo.Usuario  U
-		INNER JOIN Node_Base_API.dbo.Direccion D on D.IdUsuario = U.IdUsuario and D.Eliminado = 0
-		INNER JOIN Node_Base_API.dbo.Login L on L.IdUsuario = U.IdUsuario and L.Eliminado = 0
-		WHERE U.Eliminado = @EstatusExistente AND U.IdUsuario = @IdUsuario
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE BUSQUEDA X USUARIO ###################################
 --CREACION SP BUSCAR LOGIN DEL USUARIO
 CREATE PROCEDURE Usp_Login_BusXIdUsuario
 	@IdUsuario INT
@@ -690,112 +441,6 @@ BEGIN
 		FROM Login 
 		WHERE Eliminado = @EstatusExistente and IdUsuario = @IdUsuario
 
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP OBTENER DIRECCIONES DEL USUARIO
-CREATE PROCEDURE Usp_Direccion_BusXUsuario
-@IdUsuario INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusExistente int
-
-	SET 
-	 @EstatusExistente = 0
-
-	BEGIN TRY
-		
-		SELECT IdDireccion, IdUsuario, Calle, NumeroExt, NumeroInt, Colonia, Municipio, Estado, CP 
-		FROM Direccion 
-		WHERE Eliminado = @EstatusExistente AND IdUsuario = @IdUsuario
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---CREACION SP BUSCAR MODULOS POR ROL
-CREATE PROCEDURE Usp_ModuloXRol_Bus
-	@IdRol INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusExistente int
-
-	SET 
-	 @EstatusExistente = 0
-
-	BEGIN TRY
-
-		SELECT MXR.IdModulo, M.Descripcion 
-		FROM ModuloXRol MXR
-		INNER JOIN Modulo M on M.IdModulo = MXR.IdModulo
-		WHERE MXR.Eliminado = @EstatusExistente and MXR.IdRol = @IdRol
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS PARA VALIDAR SI EXISTE REGISTRO ###################################
-
---CREACION SP EXISTE USUARIO
-CREATE PROCEDURE Usp_Usuario_Exi
-@IdUsuario INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusExistente int
-
-	SET 
-	 @EstatusExistente = 0
-
-	BEGIN TRY
-
-		IF EXISTS( SELECT 1 FROM Usuario WHERE Eliminado = @EstatusExistente AND IdUsuario = @IdUsuario) 
-			return 1
-		else
-			return 0
-		
 	END TRY
 
 	BEGIN CATCH
@@ -879,7 +524,209 @@ BEGIN
 END
 GO
 
---CREACION SP EXISTE DIRECCIONES
+--CREACION SP ELIMINAR LOGIN POR USUARIO
+CREATE PROCEDURE Usp_Login_EliXUsuario
+	@IdUsuario INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusEliminado int
+
+	SET 
+	 @EstatusEliminado = 1
+
+	BEGIN TRY
+
+		UPDATE Login SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdUsuario = @IdUsuario
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ELIMINAR LOGIN
+CREATE PROCEDURE Usp_Login_Eli
+	@IdLogin INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusEliminado int
+
+	SET 
+	 @EstatusEliminado = 1
+
+	BEGIN TRY
+
+		UPDATE Login SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdLogin = @IdLogin
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ACTUALIZAR LOGIN
+CREATE PROCEDURE Usp_Login_Act
+	@IdLogin INT,
+	@Usuario VARCHAR(100),
+	@Contrasena VARCHAR(100),
+	@IdRol INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		UPDATE Login 
+		SET Usuario = @Usuario, Contrasena = @Contrasena, Editado = GETDATE(), IdRol = @IdRol,  UsuarioMov = @UsuarioMov
+		WHERE IdLogin = @IdLogin
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP INSERTAR LOGIN
+CREATE PROCEDURE Usp_Login_Ins
+	@IdUsuario INT,
+	@Usuario VARCHAR(100),
+	@Contrasena VARCHAR(100),
+	@IdRol INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		INSERT INTO Login (IdUsuario, Usuario, Contrasena, IdRol, Insertado, UsuarioMov) VALUES (@IdUsuario, @Usuario, @Contrasena, @IdRol, GETDATE(), @UsuarioMov)
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE DIRECCION ###################################
+
+--CREACION SP OBTENER DIRECCIONES DEL USUARIO
+CREATE PROCEDURE Usp_Direccion_BusXUsuario
+@IdUsuario INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+		
+		SELECT IdDireccion, IdUsuario, Calle, NumeroExt, NumeroInt, Colonia, Municipio, Estado, CP 
+		FROM Direccion 
+		WHERE Eliminado = @EstatusExistente AND IdUsuario = @IdUsuario
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP OBTENER DIRECCIONES
+CREATE PROCEDURE Usp_Direccion_Bus
+@IdDireccion INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+		
+		SELECT IdDireccion, IdUsuario, Calle, NumeroExt, NumeroInt, Colonia, Municipio, Estado, CP 
+		FROM Direccion 
+		WHERE Eliminado = @EstatusExistente AND IdDireccion = @IdDireccion
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP EXISTE DIRECCION
 CREATE PROCEDURE Usp_Direccion_Exi
 @IdDireccion INT
 AS
@@ -900,41 +747,6 @@ BEGIN
 			return 1
 		else
 			return 0
-
-	END TRY
-
-	BEGIN CATCH
-		SET @ErrorMessage  = ERROR_MESSAGE()
-		SET @ErrorSeverity = ERROR_SEVERITY()
-		SET @ErrorState    = ERROR_STATE()
-		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
-
-	END CATCH
-
-END
-GO
-
---################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE ELIMINACION POR USUARIO###################################
-
---CREACION SP ELIMINAR LOGIN POR USUARIO
-CREATE PROCEDURE Usp_Login_EliXUsuario
-	@IdUsuario INT,
-	@UsuarioMov INT
-AS
-BEGIN
-	
-	DECLARE
-	  @ErrorMessage   varchar(2000)
-	 ,@ErrorSeverity  tinyint
-	 ,@ErrorState     tinyint
-	 ,@EstatusEliminado int
-
-	SET 
-	 @EstatusEliminado = 1
-
-	BEGIN TRY
-
-		UPDATE Login SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdUsuario = @IdUsuario
 
 	END TRY
 
@@ -982,6 +794,559 @@ BEGIN
 END
 GO
 
---exec Node_Base_API.dbo.Usp_Login_EliXUsuario 3
---exec Node_Base_API.dbo.Usp_Direccion_EliXUsuario 3
+--CREACION SP ELIMINAR DIRECCION
+CREATE PROCEDURE Usp_Direccion_Eli
+	@IdDireccion INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusEliminado int
 
+	SET 
+	 @EstatusEliminado = 1
+
+	BEGIN TRY
+
+		UPDATE Direccion SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdDireccion = @IdDireccion
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ACTUALIZAR DIRECCION
+CREATE PROCEDURE Usp_Direccion_Act
+	@IdDireccion INT,
+	@IdUsuario INT,
+	@Calle VARCHAR(100),
+	@NumeroExt INT,
+	@NumeroInt VARCHAR(10),
+	@Colonia VARCHAR(100),
+	@Municipio VARCHAR(100),
+	@Estado VARCHAR(100),
+	@CP VARCHAR(10),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		UPDATE Direccion 
+		SET Calle = @Calle, NumeroExt = @NumeroExt, NumeroInt = @NumeroInt, Colonia = @Colonia, Municipio = @Municipio, 
+			Estado = @Estado, CP = @CP, Editado = GETDATE(), UsuarioMov = @UsuarioMov, IdUsuario = @IdUsuario
+		WHERE IdDireccion = @IdDireccion
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP INSERTAR DIRECCION
+CREATE PROCEDURE Usp_Direccion_Ins
+	@IdUsuario INT,
+	@Calle VARCHAR(100),
+	@NumeroExt INT,
+	@NumeroInt INT,
+	@Colonia VARCHAR(100),
+	@Municipio VARCHAR(100),
+	@Estado VARCHAR(100),
+	@CP VARCHAR(10),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		INSERT INTO Direccion (IdUsuario, Calle, NumeroExt, NumeroInt, Colonia, Municipio, Estado, CP, Insertado, UsuarioMov)
+		VALUES(@IdUsuario, @Calle, @NumeroExt, @NumeroInt, @Colonia, @Municipio, @Estado, @CP, GETDATE(), @UsuarioMov)
+
+		SELECT SCOPE_IDENTITY() as IdDireccion
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE MODULO ###################################
+
+--CREACION SP OBTENER MODULOS
+CREATE PROCEDURE Usp_Modulo_Obt
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		SELECT IdModulo, Descripcion FROM Modulo  WHERE Eliminado = @EstatusExistente
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP BUSCAR MODULO
+CREATE PROCEDURE Usp_Modulo_Bus
+	@IdModulo INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		SELECT IdModulo, Descripcion FROM Modulo WHERE Eliminado = @EstatusExistente and IdModulo = @IdModulo
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP EXISTE UN MODULO
+CREATE PROCEDURE Usp_Modulo_Exi
+@IdModulo INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+		
+		IF EXISTS( SELECT 1	FROM Modulo WHERE Eliminado = @EstatusExistente AND IdModulo = @IdModulo) 
+			return 1
+		else
+			return 0
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ELIMINAR MODULO
+CREATE PROCEDURE Usp_Modulo_Eli
+	@IdModulo INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusEliminado int
+
+	SET 
+	 @EstatusEliminado = 1
+
+	BEGIN TRY
+
+		UPDATE Modulo SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdModulo = @IdModulo
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ACTUALIZAR MODULO
+CREATE PROCEDURE Usp_Modulo_Act
+	@IdModulo INT,
+	@Descripcion VARCHAR(100),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		UPDATE Modulo 
+		SET Descripcion = @Descripcion, Editado = GETDATE(), UsuarioMov = @UsuarioMov
+		WHERE IdModulo = @IdModulo
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP INSERTAR MODULO
+CREATE PROCEDURE Usp_Modulo_Ins
+	@Descripcion VARCHAR(100),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+		INSERT INTO Modulo(Descripcion, Insertado, UsuarioMov) VALUES(@Descripcion, GETDATE(), @UsuarioMov)
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE ROL ###################################
+
+--CREACION SP OBTENER ROLES
+CREATE PROCEDURE Usp_Rol_Obt
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		SELECT IdRol, Descripcion FROM Rol WHERE Eliminado = @EstatusExistente
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP BUSCAR ROL
+CREATE PROCEDURE Usp_Rol_Bus
+	@IdRol INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		SELECT IdRol, Descripcion FROM Rol WHERE Eliminado = @EstatusExistente and IdRol = @IdRol
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP EXISTE UN ROL
+CREATE PROCEDURE Usp_Rol_Exi
+@IdRol INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+		
+		IF EXISTS( SELECT 1	FROM Rol WHERE Eliminado = @EstatusExistente AND IdRol = @IdRol) 
+			return 1
+		else
+			return 0
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ELIMINAR ROL
+CREATE PROCEDURE Usp_Rol_Eli
+	@IdRol INT,
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusEliminado int
+
+	SET 
+	 @EstatusEliminado = 1
+
+	BEGIN TRY
+
+		UPDATE Rol SET Eliminado = @EstatusEliminado, UsuarioMov = @UsuarioMov, Editado = GETDATE() WHERE IdRol = @IdRol
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP ACTUALIZAR ROL
+CREATE PROCEDURE Usp_Rol_Act
+	@IdRol INT,
+	@Descripcion VARCHAR(100),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+
+		UPDATE Rol 
+		SET Descripcion = @Descripcion, Editado = GETDATE(), UsuarioMov = @UsuarioMov
+		WHERE IdRol = @IdRol
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--CREACION SP INSERTAR ROL
+CREATE PROCEDURE Usp_Rol_Ins
+	@Descripcion VARCHAR(100),
+	@UsuarioMov INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+
+	BEGIN TRY
+		INSERT INTO Rol(Descripcion, Insertado, UsuarioMov) VALUES(@Descripcion, GETDATE(), @UsuarioMov)
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--################################### CREACION DE PROCEDIMIENTOS ALMACENADOS DE MODULO X ROL ###################################
+
+--CREACION SP BUSCAR MODULOS POR ROL
+CREATE PROCEDURE Usp_ModuloXRol_Bus
+	@IdRol INT
+AS
+BEGIN
+	
+	DECLARE
+	  @ErrorMessage   varchar(2000)
+	 ,@ErrorSeverity  tinyint
+	 ,@ErrorState     tinyint
+	 ,@EstatusExistente int
+
+	SET 
+	 @EstatusExistente = 0
+
+	BEGIN TRY
+
+		SELECT MXR.IdModulo, M.Descripcion 
+		FROM ModuloXRol MXR
+		INNER JOIN Modulo M on M.IdModulo = MXR.IdModulo
+		WHERE MXR.Eliminado = @EstatusExistente and MXR.IdRol = @IdRol
+
+	END TRY
+
+	BEGIN CATCH
+		SET @ErrorMessage  = ERROR_MESSAGE()
+		SET @ErrorSeverity = ERROR_SEVERITY()
+		SET @ErrorState    = ERROR_STATE()
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState)
+
+	END CATCH
+
+END
+GO
+
+--################################### INSERTS DE EJEMPLOS ###################################
+
+exec Node_Base_API.dbo.Usp_Usuario_Ins 'Arturo', 'Lopez', 'Perez',1
+exec Node_Base_API.dbo.Usp_Usuario_Ins 'Margarita', 'lopez', 'perez',1
+
+INSERT INTO Rol (Descripcion, UsuarioMov) VALUES('Administrador', 1)
+INSERT INTO Rol (Descripcion, UsuarioMov) VALUES('Cliente', 1)
+
+INSERT INTO Modulo (Descripcion, UsuarioMov) VALUES ('Administracion clientes', 1)
+INSERT INTO Modulo (Descripcion, UsuarioMov) VALUES ('Administracion productos', 1)
+INSERT INTO Modulo (Descripcion, UsuarioMov) VALUES ('Vista productos', 1)
+
+INSERT INTO ModuloXRol (IdModulo, IdRol, UsuarioMov) VALUES(1, 1, 1)
+INSERT INTO ModuloXRol (IdModulo, IdRol, UsuarioMov) VALUES(2, 1, 1)
+INSERT INTO ModuloXRol (IdModulo, IdRol, UsuarioMov) VALUES(3, 2, 1)
+
+exec Node_Base_API.dbo.Usp_Direccion_Ins 1, 'Lopez Mateos', 319, '', 'Centro', 'Morelia', 'Michoacan', '58000',1
+exec Node_Base_API.dbo.Usp_Direccion_Ins 2, 'Lopez Mateos', 321, '', 'Centro', 'Morelia', 'Michoacan', '58000',1
+
+exec Node_Base_API.dbo.Usp_Login_Ins 1, 'alopez@correo.com', '$2b$05$R12Kmx48pgdyYQDHq9ho7uGdOELjw2OLMkWvu9HlsnFD7qE8Q6K66', 1, 1
+exec Node_Base_API.dbo.Usp_Login_Ins 2, 'mperez@correo.com', '$2b$05$R12Kmx48pgdyYQDHq9ho7uGdOELjw2OLMkWvu9HlsnFD7qE8Q6K66', 2, 1
+
+GO

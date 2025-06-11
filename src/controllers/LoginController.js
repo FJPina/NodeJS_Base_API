@@ -93,16 +93,16 @@ async function Eliminar(data){
 }
 
 async function Modificar(data){
-    let conn, login, valLogin
+    let conn, login, val
 
     try {
         conn = await mssql.Connect();
-        valLogin = await LoginDA.ExisteXId(conn, data.Login.IdLogin);
+        val = await LoginDA.ExisteXId(conn, data.Login.IdLogin);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
     }
         
-    if(valLogin.returnValue == 0)
+    if(val.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try{

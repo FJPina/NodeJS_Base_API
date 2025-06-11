@@ -87,7 +87,7 @@ async function Modificar(data){
     }
 
     if(direccion.rowsAffected[1] == 0)
-        throw new error('Ocurrió un error al modificar el la dirección.', 400);
+        throw new error('Ocurrió un error al modificar la dirección.', 400);
 
 }
 
