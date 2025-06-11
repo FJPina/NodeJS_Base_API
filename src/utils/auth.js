@@ -1,29 +1,21 @@
-const jwt = require('jsonwebtoken');
 const config = require('../config');
 const error = require('../middlewares/errors');
-// const sesion = require('../controllers/SesionController');
-// const Prisma = require('@prisma/client');
+const {SignJWT, jwtVerify} = require('jose')
 
-// const prisma = new Prisma.PrismaClient();
-const secret = config.jwt.secret;
+const encoder = new TextEncoder();
+const secret = encoder.encode(config.jwt.secret);
 
-function AsignarToken(data){
-    return jwt.sign(data, secret);
+async function AsignarToken(data){
+
+    var JWTObj = new SignJWT(data);
+    const Token = await JWTObj.setProtectedHeader({alg: "HS256", typ: "JWT"}).setIssuedAt().setExpirationTime('10m').sign(secret);
+    return Token;
 }
 
-function verificarToken(token){
-    return jwt.verify(token, secret);
+async function verificarToken(token){
+    const {payload} = await jwtVerify (token, secret);
+    return payload;
 }
-
-const validarToken = {
-    confirmarToken: async function(req){
-        const decodificado = await decodeHeader(req);
-    }
-}
-
-async function confirmarToken(req){
-        const decodificado = await decodeHeader(req);
-    }
 
 async function obtenerToken(req){
     const autorizacion = req.headers.authorization || '';
@@ -38,18 +30,15 @@ async function obtenerToken(req){
 
     let token = autorizacion.replace('Bearer ', '');
 
-    const comparado = await compararToken(token, req.body.Correo);
+    // Se utilizaba para validar el token guardado en base // const comparado = await compararToken(token, req.body.Correo);
 
     return token;
 }
 
-async function decodeHeader(req){
+async function validarToken(req){
     const autorizacion = req.headers.authorization || '';
     const token = await obtenerToken(req);
-    const verificado = verificarToken(token);
-
-    req.user = verificado;
-    return verificado;
+    return verificado = await verificarToken(token);
 }
 
 // async function compararToken(token, Correo){
@@ -65,6 +54,5 @@ async function decodeHeader(req){
 
 module.exports = {
     AsignarToken,
-    validarToken,
-    confirmarToken
+    validarToken
 }

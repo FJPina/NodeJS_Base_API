@@ -3,7 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const error = require('./utils/errors');
 
-const sorteo = require('./routes/SorteoRoutes');
+const Direccion = require('./routes/DireccionRoutes');
 const usuario = require('./routes/UsuarioRoutes');
 const login = require('./routes/LoginRoutes');
 
@@ -20,8 +20,8 @@ app.set('port', config.app.port);
 // console.log(config.app.port, config.app.stringConnecion)
 
 //Rutas
-app.use('/api/sorteo', sorteo);
-app.use('/api/Usuario', usuario);
+app.use('/api/direccion', Direccion);
+app.use('/api/usuario', usuario);
 app.use('/api/login', login);
 app.use(error);
 

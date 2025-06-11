@@ -1,9 +1,6 @@
 const sqlserver = require('mssql');
 const config = require('../../config');
 
-
-
-
 async function Connect(){
 
     try {
@@ -15,6 +12,5 @@ async function Connect(){
 }
 
 module.exports = {
-    
     Connect
 }
