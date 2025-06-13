@@ -1,11 +1,16 @@
-const respuestas = require('./respuestas');
+function error(message, codigo, nombre = ""){
+    let e = new Error();
+    let nombreDef = "Se ha producido un error al procesar la solicitud."
+    if(codigo){
+        e.statusCode = codigo;
+    }
 
-function errors(err, req, res, next){
-    console.log('[error', err);
-    const message = err.message || 'Error interno';
-    const status = err.statusCode || 500;
-    const name = err.name || '';
-    respuestas.error(req, res, message, status, name)
+    e.name = nombre !== "" ? nombre : nombreDef;
+
+    if(message){
+        e.cause = message;
+    }
+    return e;
 }
 
-module.exports = errors;
+module.exports = error;

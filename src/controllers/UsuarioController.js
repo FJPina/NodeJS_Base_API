@@ -1,4 +1,4 @@
-const error = require('../middlewares/errors');
+const error = require('../utils/errors');
 const bcrypt = require('bcrypt');
 const auth = require('../utils/auth');
 const mssql = require('../db/Connection/sqlserver');

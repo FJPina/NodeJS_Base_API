@@ -1,4 +1,4 @@
-const error = require('../middlewares/errors');
+const error = require('../utils/errors');
 const mssql = require('../db/Connection/sqlserver');
 const ModuloDA = require('../db/DataAccess/ModuloDA');
 

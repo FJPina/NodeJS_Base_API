@@ -1,7 +1,7 @@
 const config  = require('./config');
 const express = require('express');
 const morgan = require('morgan');
-const error = require('./utils/errors');
+const error = require('./middlewares/errors');
 
 const direccion = require('./routes/DireccionRoutes');
 const usuario = require('./routes/UsuarioRoutes');
