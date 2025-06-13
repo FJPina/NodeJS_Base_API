@@ -4,7 +4,7 @@ import config from '../../config.js';
 async function Connect(){
 
     try {
-        conn = await sqlserver.connect(config.sqlserver);
+        const conn = await sqlserver.connect(config.sqlserver);
         return conn;
     } catch (error) {
         throw error;

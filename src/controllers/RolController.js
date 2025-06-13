@@ -3,22 +3,30 @@ import mssql from '../db/Connection/sqlserver.js';
 import RolDA from '../db/DataAccess/RolDA.js';
 
 async function Listar(){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await RolDA.Listar(conn);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
 async function Buscar(id){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await RolDA.Buscar(conn, id);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -38,6 +46,9 @@ async function Crear(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(Rol.rowsAffected[1] == 0)
@@ -53,15 +64,22 @@ async function Eliminar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(val.returnValue == 0)
          throw new error('El rol no existe.');
 
     try {
+        conn = await mssql.Connect();
         RolDel = await RolDA.Eliminar(conn, data);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -73,12 +91,16 @@ async function Modificar(data){
         val = await RolDA.Existe(conn, data.Rol.IdRol);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(val.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try {
+        conn = await mssql.Connect();
         const RolData = {
             IdRol : data.Rol.IdRol,
             Descripcion : data.Rol.Descripcion,
@@ -89,6 +111,9 @@ async function Modificar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(Rol.rowsAffected[1] == 0)

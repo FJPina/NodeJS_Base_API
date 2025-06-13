@@ -6,7 +6,7 @@ import LoginDA from '../db/DataAccess/LoginDA.js';
 
 
 async function Login(data){
-    let res, conn, Modulos;
+    let res, conn, Modulos, result;
 
     try {
         conn = await mssql.Connect();
@@ -14,19 +14,27 @@ async function Login(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(res.rowsAffected[1] == 0)
         throw new error('El correo no existe.');
 
-    result = await bcrypt.compare(data.Contrasena, res.recordset[0].Contrasena)
+    result = await bcrypt.compare(data.Contrasena, res.recordset[0].Contrasena);
+    
     if(result){ 
 
         try {
+            conn = await mssql.Connect();
             Modulos = await LoginDA.BuscarModulosXRol(conn, res.recordset[0].IdRol);
         } catch (err) {
             throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
-        }
+        }finally{
+            if (conn)
+                await conn.close();
+        }   
 
         const token = await auth.AsignarToken({Usuario: data.Usuario});    
         return  {"UsuarioMov": res.recordset[0].IdUsuario, "Modulos": Modulos.recordset, "Token" : token};
@@ -37,12 +45,16 @@ async function Login(data){
 }
 
 async function LoginXUsuario(id){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await LoginDA.BuscarXIdUsuario(conn, id);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    }finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -64,6 +76,9 @@ async function Crear(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(login.rowsAffected[1] == 0)
@@ -80,15 +95,22 @@ async function Eliminar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    }finally{
+        if (conn)
+            await conn.close();
     }
 
     if(val.returnValue == 0)
          throw new error('El Login no existe.');
 
     try {        
+        conn = await mssql.Connect();
         loginDel = await LoginDA.Eliminar(conn, data);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    }finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -100,12 +122,16 @@ async function Modificar(data){
         val = await LoginDA.ExisteXId(conn, data.Login.IdLogin);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    }finally{
+        if (conn)
+            await conn.close();
     }
         
     if(val.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try{
+        conn = await mssql.Connect();
         const loginData = {
             IdLogin : data.Login.IdLogin,
             IdUsuario : data.Login.IdUsuario,
@@ -119,6 +145,9 @@ async function Modificar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(login.rowsAffected[1] == 0)
@@ -127,12 +156,16 @@ async function Modificar(data){
 }
 
 async function Buscar(id){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await LoginDA.Buscar(conn, id);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    }finally{
+        if (conn)
+            await conn.close();
     }
 }
 

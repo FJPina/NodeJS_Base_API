@@ -1,5 +1,5 @@
 /*
-use DISTRIBUIDORA
+use master
 drop database Node_Base_API
 create database Node_Base_API
 */
@@ -593,6 +593,7 @@ GO
 --CREACION SP ACTUALIZAR LOGIN
 CREATE PROCEDURE Usp_Login_Act
 	@IdLogin INT,
+	@IdUsuario INT, 
 	@Usuario VARCHAR(100),
 	@Contrasena VARCHAR(100),
 	@IdRol INT,
@@ -608,7 +609,7 @@ BEGIN
 	BEGIN TRY
 
 		UPDATE Login 
-		SET Usuario = @Usuario, Contrasena = @Contrasena, Editado = GETDATE(), IdRol = @IdRol,  UsuarioMov = @UsuarioMov
+		SET IdUsuario = @IdUsuario, Usuario = @Usuario, Contrasena = @Contrasena, Editado = GETDATE(), IdRol = @IdRol,  UsuarioMov = @UsuarioMov
 		WHERE IdLogin = @IdLogin
 
 	END TRY

@@ -25,6 +25,9 @@ async function Crear(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(direccion.rowsAffected[1] == 0)
@@ -40,15 +43,22 @@ async function Eliminar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(val.returnValue == 0)
          throw new error('La dirección no existe.');
 
     try {
+        conn = await mssql.Connect();
         direccionDel = await DireccionDA.Eliminar(conn, data);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -60,12 +70,16 @@ async function Modificar(data){
         valDir = await DireccionDA.Existe(conn, data.Direccion.IdDireccion);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(valDir.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try {
+        conn = await mssql.Connect();
         const direccionData = {
             IdDireccion : data.Direccion.IdDireccion,
             IdUsuario : data.Direccion.IdUsuario,
@@ -83,6 +97,9 @@ async function Modificar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(direccion.rowsAffected[1] == 0)
@@ -91,22 +108,30 @@ async function Modificar(data){
 }
 
 async function DireccionXUsuario(id){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await DireccionDA.BuscarXUsuario(conn, id);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
 async function Buscar(id){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await DireccionDA.BuscarXUsuario(conn, id);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 

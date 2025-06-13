@@ -6,22 +6,30 @@ import LoginDA from '../db/DataAccess/LoginDA.js';
 import DireccionDA from '../db/DataAccess/DireccionDA.js';
 
 async function Listar(){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await UsuarioDA.Listar(conn);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
 async function Buscar(IdUsuario){
+    let conn;
     try{
-        const conn = await mssql.Connect();
+        conn = await mssql.Connect();
         const res = await UsuarioDA.Buscar(conn, IdUsuario);
         return res.recordset;
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -32,23 +40,30 @@ async function BuscarDetalle(IdUsuario){
         usr = await UsuarioDA.Buscar(conn, IdUsuario);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(usr.rowsAffected[1] == 0)
         throw new error('El usuario no existe.', 404);
 
     try {
+        conn = await mssql.Connect();
         login = await LoginDA.BuscarXIdUsuario(conn, IdUsuario);
         direccion = await DireccionDA.BuscarXUsuario(conn, IdUsuario);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     return {Usuario : usr.recordset, Login: login.recordset, Direccion: direccion.recordset};
 }
 
 async function Crear(data){
-    let conn, usr, login, direccion
+    let conn, usr
 
     try{
         conn = await mssql.Connect();
@@ -57,6 +72,9 @@ async function Crear(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(usr.rowsAffected[1] == 0)
@@ -65,30 +83,38 @@ async function Crear(data){
 }
 
 async function CrearDetalle(data){
-    let conn, usr, login, direccion
+    let conn, usr, login, direccion, val
 
     try {
         conn = await mssql.Connect();
         val = await LoginDA.BuscarXUsuario(conn, data.Login.Usuario);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(val.returnValue != 0)
         throw new error('Ya existe una cuenta con este Usuario');
 
     try{
+        conn = await mssql.Connect();
         const usrData = {Nombre : data.Usuario.Nombre, ApPaterno : data.Usuario.ApPaterno, ApMaterno : data.Usuario.ApMaterno, UsuarioMov : data.UsuarioMov};
         usr = await UsuarioDA.Crear(conn, usrData);
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(usr.rowsAffected[1] == 0)
         throw new error('Ocurrió un error al insertar el usuario.', 400);
 
     try {
+        conn = await mssql.Connect();
         const loginData = {
             IdUsuario : usr.recordset[0].IdUsuario,
 	        Usuario : data.Login.Usuario,
@@ -115,6 +141,9 @@ async function CrearDetalle(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(login.rowsAffected[1] == 0)
@@ -132,22 +161,29 @@ async function EliminarDetalle(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(val.returnValue == 0)
          throw new error('El usuario no existe.');
 
-    try {        
+    try {   
+        conn = await mssql.Connect();     
         usrDel = await UsuarioDA.Eliminar(conn, data);
         loginDel = await LoginDA.EliminarXUsuario(conn, data);
         direccionDel = await DireccionDA.EliminarXUsuario(conn, data);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
 async function Eliminar(data){
-    let conn, val, usrDel, loginDel, direccionDel
+    let conn, val, usrDel
 
     try {
         conn = await mssql.Connect();
@@ -155,15 +191,22 @@ async function Eliminar(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(val.returnValue == 0)
          throw new error('El usuario no existe.');
 
-    try {        
+    try {     
+        conn = await mssql.Connect();   
         usrDel = await UsuarioDA.Eliminar(conn, data);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 }
 
@@ -175,17 +218,24 @@ async function Modificar(data){
         valUsr = await UsuarioDA.Existe(conn, data.Usuario.IdUsuario);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(valUsr.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try{
+        conn = await mssql.Connect();
         const usrData = {IdUsuario : data.Usuario.IdUsuario, Nombre : data.Usuario.Nombre, ApPaterno : data.Usuario.ApPaterno, ApMaterno : data.Usuario.ApMaterno, UsuarioMov : data.UsuarioMov};
         usr = await UsuarioDA.Modificar(conn, usrData);
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(usr.rowsAffected[1] == 0)
@@ -201,12 +251,16 @@ async function ModificarDetalle(data){
         valLogin = await LoginDA.ExisteXId(conn, data.Login.IdLogin);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(valLogin.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try{
+        conn = await mssql.Connect();
         const loginData = {
             IdLogin : data.Login.IdLogin,
             IdUsuario : data.Login.IdUsuario,
@@ -220,6 +274,9 @@ async function ModificarDetalle(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(login.rowsAffected[0] == 0)
@@ -227,20 +284,28 @@ async function ModificarDetalle(data){
 
     //Bloque USR
     try {
+        conn = await mssql.Connect();
         valUsr = await UsuarioDA.Existe(conn, data.Usuario.IdUsuario);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(valUsr.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try{
+        conn = await mssql.Connect();
         const usrData = {IdUsuario : data.Usuario.IdUsuario, Nombre : data.Usuario.Nombre, ApPaterno : data.Usuario.ApPaterno, ApMaterno : data.Usuario.ApMaterno, UsuarioMov : data.UsuarioMov};
         usr = await UsuarioDA.Modificar(conn, usrData);
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(usr.rowsAffected[0] == 0)
@@ -248,15 +313,20 @@ async function ModificarDetalle(data){
 
     //Bloque DIR
     try {
+        conn = await mssql.Connect();
         valDir = await DireccionDA.Existe(conn, data.Direccion.IdDireccion);
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 400);
+    } finally{
+        if (conn)
+            await conn.close();
     }
         
     if(valDir.returnValue == 0)
         throw new error('No se encontró el registro.');
 
     try {
+        conn = await mssql.Connect();
         const direccionData = {
             IdDireccion : data.Direccion.IdDireccion,
             IdUsuario : data.Direccion.IdUsuario,
@@ -274,6 +344,9 @@ async function ModificarDetalle(data){
 
     } catch (err) {
         throw new error(err.message.substring(err.message.indexOf("Argument"), err.message.length), 500);
+    } finally{
+        if (conn)
+            await conn.close();
     }
 
     if(direccion.rowsAffected[1] == 0)

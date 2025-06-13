@@ -37,6 +37,7 @@ async function obtenerToken(req){
 }
 
 async function validarToken(req){
+    let verificado;
     const autorizacion = req.headers.authorization || '';
     const token = await obtenerToken(req);
     return verificado = await verificarToken(token);
