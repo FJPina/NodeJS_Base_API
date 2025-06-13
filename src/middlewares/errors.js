@@ -1,4 +1,4 @@
-const respuestas = require('../utils/respuestas');
+import respuestas from '../utils/respuestas.js';
 
 function errors(err, req, res, next){
     console.log('[error', err);
@@ -8,4 +8,4 @@ function errors(err, req, res, next){
     respuestas.error(req, res, message, status, name)
 }
 
-module.exports = errors;
+export default errors;

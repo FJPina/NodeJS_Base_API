@@ -13,4 +13,4 @@ function error(message, codigo, nombre = ""){
     return e;
 }
 
-module.exports = error;
+export default error;

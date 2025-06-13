@@ -1,13 +1,13 @@
-const config  = require('./config');
-const express = require('express');
-const morgan = require('morgan');
-const error = require('./middlewares/errors');
+import config  from './config.js';
+import express from 'express';
+import morgan from 'morgan';
+import error from './middlewares/errors.js';
 
-const direccion = require('./routes/DireccionRoutes');
-const usuario = require('./routes/UsuarioRoutes');
-const login = require('./routes/LoginRoutes');
-const modulo = require('./routes/ModuloRoutes');
-const rol = require('./routes/RolRoutes');
+import direccion from './routes/DireccionRoutes.js';
+import usuario from'./routes/UsuarioRoutes.js';
+import login from './routes/LoginRoutes.js';
+import modulo from './routes/ModuloRoutes.js';
+import rol from './routes/RolRoutes.js';
 
 const app = express();
 
@@ -29,4 +29,4 @@ app.use('/api/modulo', modulo);
 app.use('/api/rol', rol);
 app.use(error);
 
-module.exports = app;
+export default app;

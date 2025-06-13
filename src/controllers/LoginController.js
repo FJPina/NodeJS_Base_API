@@ -1,8 +1,8 @@
-const error = require('../utils/errors');
-const bcrypt = require('bcrypt');
-const auth = require('../utils/auth');
-const mssql = require('../db/Connection/sqlserver');
-const LoginDA = require('../db/DataAccess/LoginDA');
+import error from '../utils/errors.js';
+import bcrypt from 'bcrypt';
+import auth from '../utils/auth.js';
+import mssql from '../db/Connection/sqlserver.js';
+import LoginDA from '../db/DataAccess/LoginDA.js';
 
 
 async function Login(data){
@@ -136,11 +136,13 @@ async function Buscar(id){
     }
 }
 
-module.exports = {
+const LoginController = {
     Login,
     LoginXUsuario,
     Modificar,
     Crear,
     Eliminar,
     Buscar
-}
+};
+
+export default LoginController;

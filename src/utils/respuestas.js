@@ -1,4 +1,4 @@
-exports.success = function(rec, res, mensaje = '', status = 200){
+const success = function(rec, res, mensaje = '', status = 200){
     res.status(status).send({
     error:false,
     status:status,
@@ -6,10 +6,17 @@ exports.success = function(rec, res, mensaje = '', status = 200){
 })
 }
 
-exports.error = function(rec, res, mensaje = 'Error interno', status = 500){
+const error = function(rec, res, mensaje = 'Error interno', status = 500){
     res.status(status).send({
         error:true,
         status:status,
         body:mensaje
     })
     }
+
+const respuestas = {
+    success,
+    error
+};
+
+export default respuestas;

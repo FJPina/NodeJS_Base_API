@@ -1,9 +1,10 @@
-const config = require('../config');
-const error = require('../middlewares/errors');
-const {SignJWT, jwtVerify} = require('jose')
+import config from '../config.js';
+import error from '../utils/errors.js';
+import {SignJWT, jwtVerify} from 'jose';
 
 const encoder = new TextEncoder();
 const secret = encoder.encode(config.jwt.secret);
+
 
 async function AsignarToken(data){
 
@@ -52,7 +53,9 @@ async function validarToken(req){
 //     }    
 // }
 
-module.exports = {
+const auth = {
     AsignarToken,
     validarToken
-}
+};
+
+export default auth;

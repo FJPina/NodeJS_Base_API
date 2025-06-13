@@ -1,6 +1,6 @@
-const error = require('../utils/errors');
-const mssql = require('../db/Connection/sqlserver');
-const ModuloDA = require('../db/DataAccess/ModuloDA');
+import error from '../utils/errors.js';
+import mssql from '../db/Connection/sqlserver.js';
+import ModuloDA from '../db/DataAccess/ModuloDA.js';
 
 async function Listar(){
     try{
@@ -96,10 +96,12 @@ async function Modificar(data){
 
 }
 
-module.exports = {
+const ModuloController = {
     Listar,
     Buscar,
     Eliminar,
     Modificar,
     Crear
-}
+};
+
+export default ModuloController;

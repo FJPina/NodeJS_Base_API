@@ -1,6 +1,6 @@
-require('dotenv').config();
+import "dotenv/config";
 
-module.exports = {
+const config = {
     app:{
         port: process.env.PORT,
     },
@@ -25,4 +25,6 @@ module.exports = {
             Encrypt: false
         }
     }
-};
+}
+
+export default config

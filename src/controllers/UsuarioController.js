@@ -1,10 +1,9 @@
-const error = require('../utils/errors');
-const bcrypt = require('bcrypt');
-const auth = require('../utils/auth');
-const mssql = require('../db/Connection/sqlserver');
-const UsuarioDA = require('../db/DataAccess/UsuarioDA');
-const LoginDA = require('../db/DataAccess/LoginDA');
-const DireccionDA = require('../db/DataAccess/DireccionDA');
+import error from '../utils/errors.js';
+import bcrypt from 'bcrypt';
+import mssql from '../db/Connection/sqlserver.js';
+import UsuarioDA from '../db/DataAccess/UsuarioDA.js';
+import LoginDA from '../db/DataAccess/LoginDA.js';
+import DireccionDA from '../db/DataAccess/DireccionDA.js';
 
 async function Listar(){
     try{
@@ -282,7 +281,7 @@ async function ModificarDetalle(data){
 
 }
 
-module.exports = {
+const UsuarioController = {
     Listar,
     Buscar,
     BuscarDetalle,
@@ -292,4 +291,6 @@ module.exports = {
     EliminarDetalle,
     Modificar,
     ModificarDetalle
-}
+};
+
+export default UsuarioController;

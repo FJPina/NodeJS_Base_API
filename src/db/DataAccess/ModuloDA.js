@@ -1,4 +1,4 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 function Listar(conn){
     return new Promise((resolve, reject) =>{
@@ -63,11 +63,13 @@ function Crear(conn, data){
     });
 }
 
-module.exports = {
+const ModuloDA = {
     Listar,
     Buscar,
     Existe,
     Eliminar,
     Modificar,
     Crear
-}
+};
+
+export default ModuloDA;

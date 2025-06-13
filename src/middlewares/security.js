@@ -1,7 +1,7 @@
-const auth = require("../utils/auth");
-const respuestas = require('../utils/respuestas');
+import auth from "../utils/auth.js";
+import respuestas from '../utils/respuestas.js';
 
-module.exports = function validarToken(){
+export default function validarToken(){
     function middleware(req, res, next){
         const Item = auth.validarToken(req).then(()=>{
             next();

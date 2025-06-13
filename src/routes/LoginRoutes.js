@@ -1,8 +1,9 @@
-const express = require('express');
-const respuestas = require('../utils/respuestas');
-const controlador = require('../controllers/LoginController');
+import express from 'express';
+import respuestas from '../utils/respuestas.js';
+import controlador from '../controllers/LoginController.js';
+import seguridad from '../middlewares/security.js';
+
 const router = express.Router();
-const seguridad = require('../middlewares/security');
 
 //Rutas
 router.get('/:id',seguridad(), LoginXUsuario);
@@ -66,4 +67,4 @@ async function Crear(req, res, next){
     }
 }
 
-module.exports = router;
+export default router;

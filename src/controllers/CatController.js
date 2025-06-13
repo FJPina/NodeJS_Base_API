@@ -1,11 +1,11 @@
-const { json } = require('express');
+import { json } from 'express';
 
 module.exports = function(dbIny){
 
     let db = dbIny;
 
     if(!db){
-        db = require('../db/Connection/mysql');
+        db = import('../db/Connection/mysql.js');
     }
 
     function Listar(tabla){

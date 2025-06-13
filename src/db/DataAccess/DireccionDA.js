@@ -1,4 +1,4 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 function BuscarXUsuario(conn, IdUsuario){
     return new Promise((resolve, reject) =>{
@@ -79,11 +79,13 @@ function Modificar(conn, data){
     });
 }
 
-module.exports = {
+const DireccionDA = {
     BuscarXUsuario,
     Existe,
     Crear,
     Eliminar,
     EliminarXUsuario,
     Modificar
-}
+};
+
+export default DireccionDA;

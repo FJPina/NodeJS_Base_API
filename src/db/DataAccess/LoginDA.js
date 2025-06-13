@@ -1,4 +1,4 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 function Buscar(conn, IdLogin){
     return new Promise((resolve, reject) =>{
@@ -111,7 +111,7 @@ function EliminarXUsuario(conn, data){
     });
 }
 
-module.exports = {
+const LoginDA = {
     Buscar,
     BuscarXUsuario,
     BuscarXIdUsuario,
@@ -122,4 +122,6 @@ module.exports = {
     Crear,
     Eliminar,
     EliminarXUsuario    
-}
+};
+
+export default LoginDA;

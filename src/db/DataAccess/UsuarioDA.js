@@ -1,4 +1,4 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 function Listar(conn){
     return new Promise((resolve, reject) =>{
@@ -77,7 +77,7 @@ function Modificar(conn, data){
     });
 }
 
-module.exports = {
+const UsuarioDA = {
     Listar,
     Buscar,
     BuscarCompleto,
@@ -85,4 +85,6 @@ module.exports = {
     Existe,
     Eliminar,
     Modificar
-}
+};
+
+export default UsuarioDA;

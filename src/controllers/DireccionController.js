@@ -1,7 +1,6 @@
-const error = require('../utils/errors');
-const bcrypt = require('bcrypt');
-const mssql = require('../db/Connection/sqlserver');
-const DireccionDA = require('../db/DataAccess/DireccionDA');
+import error from '../utils/errors.js';
+import mssql from '../db/Connection/sqlserver.js';
+import DireccionDA from '../db/DataAccess/DireccionDA.js';
 
 async function Crear(data){
     let conn, direccion
@@ -111,10 +110,12 @@ async function Buscar(id){
     }
 }
 
-module.exports = {
+const DireccionController = {
     Crear,
     Eliminar,
     Modificar,
     Buscar,
     DireccionXUsuario
-}
+};
+
+export default DireccionController;

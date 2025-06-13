@@ -1,5 +1,5 @@
-const mysql = require('mysql2');
-const config = require('../../config');
+import mysql from 'mysql2';
+import config from '../../config.js';
 
 const dbConfig = {
     host: config.mysql.host,
@@ -75,10 +75,12 @@ function Query(consulta){
     });
 }
 
-module.exports = {
+const sql = {
     Listar,
     Buscar,
     Crear,
     Eliminar,
     Query
 }
+
+export default sql;
